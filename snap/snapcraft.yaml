@@ -32,7 +32,7 @@ apps:
 
 parts:
   curl:
-    after: [nghttp3]
+    # after: [nghttp3]
     plugin: autotools
     source: .
     override-pull: |
