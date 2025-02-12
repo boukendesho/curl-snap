@@ -1,0 +1,62 @@
+name: Check if a new version has been released by upstream
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-snapcraft-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: fetch upstream latest tag
+        id: upstream
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: curl/curl
+          sort-tags: false
+
+      - name: modify upstream version
+        id: modified
+        run: |
+          upstream_version=${{ steps.upstream.outputs.tag }}
+          if [ -z $upstream_version ]; then
+            exit 1
+          else
+            # modify this cause official version number is different from gh tag name
+            # e.g git repo tag: curl-8_12_0
+            # official version: 8.12.0
+            modified_version=$(echo $upstream_version | tr -d 'curl-' | tr '_' '.')
+            echo "version=$modified_version" >> $GITHUB_OUTPUT
+          fi
+
+      - name: show upstream version
+        run: echo "Upstream version is ${{ steps.modified.outputs.version }}"
+      
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+      
+      - name: get current version
+        id: current
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq '.version' 'snap/snapcraft.yaml'
+
+      - name: show current version
+        run: echo "Current version is ${{ steps.current.outputs.result }}"
+
+      - name: update version number
+        id: update
+        if: steps.modified.outputs.version != steps.current.outputs.result
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.version = "${{ steps.modified.outputs.version }}"' 'snap/snapcraft.yaml'
+          
+      - name: Commit changes
+        if: steps.update.outcome == 'success'
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add .
+          git commit -m "update snapcraft.yaml to version ${{ steps.modified.outputs.version }}"
+          git push
