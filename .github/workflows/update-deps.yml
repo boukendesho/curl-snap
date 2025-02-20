@@ -1,0 +1,78 @@
+name: update deps
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-snapcraft-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: fetch upstream openssl latest file
+        id: upstream-openssl
+        run: |
+          latest_link=$(curl -s https://api.github.com/repos/openssl/openssl/releases/latest  |  jq -r '.assets[] | select(.name | endswith ("gz")) | .browser_download_url')
+          if [ -z $latest_link ]; then
+            exit 1
+          else
+            echo "latest=$latest_link" >> $GITHUB_OUTPUT
+
+      - name: show latest openssl link
+        run: echo "Latest link is ${{ steps.upstream-openssl.outputs.latest }}"
+      
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+      
+      - name: get current openssl link
+        id: current-openssl
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq '.parts.openssl.source' 'snap/snapcraft.yaml'
+
+      - name: show current openssl link
+        run: echo "Current openssl link is ${{ steps.current-openssl.outputs.result }}"
+
+      - name: update openssl link
+        id: update-openssl
+        if: steps.upstream-openssl.outputs.latest != steps.current-openssl.outputs.result
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.parts.openssl.source = "${{ steps.upstream-openssl.outputs.latest }}"' 'snap/snapcraft.yaml'
+          
+      - name: fetch upstream nghttp3 latest file
+        id: upstream-nghttp3
+        run: |
+          latest_link=$(curl -s https://api.github.com/repos/ngtcp2/nghttp3/releases/latest  |  jq -r '.assets[] | select(.name | endswith (".tar.gz")) | .browser_download_url')
+          if [ -z $latest_link ]; then
+            exit 1
+          else
+            echo "latest=$latest_link" >> $GITHUB_OUTPUT
+
+      - name: show latest nghttp3 link
+        run: echo "Latest link is ${{ steps.upstream-nghttp3.outputs.latest }}"
+      
+      - name: get current nghttp3 link
+        id: current-nghttp3
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq '.parts.nghttp3.source' 'snap/snapcraft.yaml'
+
+      - name: show current nghttp3 link
+        run: echo "Current nghttp3 link is ${{ steps.current-nghttp3.outputs.result }}"
+
+      - name: update nghttp3 link
+        id: update-nghttp3
+        if: steps.upstream-nghttp3.outputs.latest != steps.current-nghttp3.outputs.result
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.parts.nghttp3.source = "${{ steps.upstream-nghttp3.outputs.latest }}"' 'snap/snapcraft.yaml'
+
+      - name: Commit changes
+        if: steps.update-openssl.outcome == 'success' || steps.update-nghttp3.outcome == 'success'
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add .
+          git commit -m "update deps"
+          git push
