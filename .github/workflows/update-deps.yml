@@ -17,6 +17,7 @@ jobs:
             exit 1
           else
             echo "latest=$latest_link" >> $GITHUB_OUTPUT
+          fi
 
       - name: show latest openssl link
         run: echo "Latest link is ${{ steps.upstream-openssl.outputs.latest }}"
@@ -48,6 +49,7 @@ jobs:
             exit 1
           else
             echo "latest=$latest_link" >> $GITHUB_OUTPUT
+          fi
 
       - name: show latest nghttp3 link
         run: echo "Latest link is ${{ steps.upstream-nghttp3.outputs.latest }}"
