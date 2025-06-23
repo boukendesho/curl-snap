@@ -1,7 +1,8 @@
 ## curl-snap
 [![curl](https://snapcraft.io/curl/badge.svg)](https://snapcraft.io/curl)
 
-[cURL Project Link](https://curl.se) 
+## Upstream
+[![curl](https://img.shields.io/github/v/release/curl/curl?logo=github)](https://github.com/curl/curl)
 
 cURL is command line tool and library for transferring data with URLs(since 1998).
   
