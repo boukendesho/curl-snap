@@ -18,7 +18,15 @@ plugs:
       - $HOME/.curlrc
 apps:
   curl:
-    command: usr/local/bin/curl
+    command: usr/local/bin/wrapper.sh
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/local/lib
+    plugs:
+      - network
+      - home
+      - dot-curlrc
+  wcurl:
+    command: usr/local/bin/wcurl
     environment:
       LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/local/lib
     plugs:
@@ -32,6 +40,10 @@ apps:
     plugs:
       - network
       - network-bind
+      - home
+  snap-acked:
+    command: usr/local/bin/snap_ack.sh
+    plugs:
       - home
 parts:
   curl:
@@ -91,3 +103,8 @@ parts:
       - --enable-lib-only
     build-packages:
       - pkg-config
+  scripts:
+    plugin: dump
+    source: scripts/
+    organize:
+      '*': usr/local/bin/
