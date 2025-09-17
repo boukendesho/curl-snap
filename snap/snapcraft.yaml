@@ -25,14 +25,6 @@ apps:
       - network
       - home
       - dot-curlrc
-  wcurl:
-    command: usr/local/bin/wcurl
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/local/lib
-    plugs:
-      - network
-      - home
-      - dot-curlrc
   openssl:
     command: usr/local/bin/openssl
     environment:
