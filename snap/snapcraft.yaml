@@ -90,7 +90,7 @@ parts:
   nghttp3:
     after: [openssl]
     plugin: autotools
-    source: https://github.com/ngtcp2/nghttp3/releases/download/v1.11.0/nghttp3-1.11.0.tar.gz
+    source: https://github.com/ngtcp2/nghttp3/releases/download/v1.12.0/nghttp3-1.12.0.tar.gz
     autotools-configure-parameters:
       - --enable-lib-only
     build-packages:
