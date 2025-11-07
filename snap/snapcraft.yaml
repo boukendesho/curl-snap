@@ -39,7 +39,10 @@ apps:
       - home
 parts:
   curl:
-    after: [nghttp3]
+    after:
+      - nghttp2
+      - nghttp3
+      - openssl
     plugin: autotools
     source: https://curl.se/download/curl-${SNAPCRAFT_PROJECT_VERSION}.tar.gz
     autotools-configure-parameters:
@@ -50,6 +53,7 @@ parts:
       - --with-nghttp3
       - --with-openssl-quic
       - --enable-versioned-symbols
+      - --disable-static
     build-packages:
       # - libssl-dev
       - libssh2-1-dev
@@ -57,7 +61,7 @@ parts:
       - libidn2-dev
       - librtmp-dev
       - libldap2-dev
-      - libnghttp2-dev
+      # - libnghttp2-dev
       - libpsl-dev
       - libkrb5-dev
       - libzstd-dev
@@ -67,11 +71,14 @@ parts:
       - librtmp1
       - libldap2
       - libssh2-1t64
-      - libnghttp2-14
+      # - libnghttp2-14
       - libpsl5t64
       - libkrb5-3
       - libzstd1
     prime:
+      - -usr/share/doc
+      - -usr/local/include
+      - -usr/local/share/doc
       - -usr/local/share/man
   openssl:
     plugin: make
@@ -85,16 +92,34 @@ parts:
       fi
       craftctl default
     prime:
-      - -usr/local/share/doc/openssl
+      - -usr/local/include
+      - -usr/local/lib/libcrypto.a
+      - -usr/local/lib/libssl.a
+      - -usr/local/share/doc
       - -usr/local/share/man
-  nghttp3:
-    after: [openssl]
-    plugin: autotools
-    source: https://github.com/ngtcp2/nghttp3/releases/download/v1.12.0/nghttp3-1.12.0.tar.gz
-    autotools-configure-parameters:
-      - --enable-lib-only
+  nghttp2:
+    plugin: cmake
+    source: https://github.com/nghttp2/nghttp2/releases/download/v1.68.0/nghttp2-1.68.0.tar.gz
+    cmake-parameters:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_LIB_ONLY=ON
+      - -DENABLE_DOC=OFF
     build-packages:
       - pkg-config
+    prime:
+      - -usr/local/include
+  nghttp3:
+    plugin: cmake
+    source: https://github.com/ngtcp2/nghttp3/releases/download/v1.12.0/nghttp3-1.12.0.tar.gz
+    cmake-parameters:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_LIB_ONLY=ON
+      - -DENABLE_STATIC_LIB=OFF
+    build-packages:
+      - pkg-config
+    prime:
+      - -usr/local/include
+      - -usr/local/share/doc
   scripts:
     plugin: dump
     source: scripts/
