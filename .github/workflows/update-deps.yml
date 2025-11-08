@@ -44,7 +44,7 @@ jobs:
       - name: fetch upstream nghttp2 latest file
         id: upstream-nghttp2
         run: |
-          latest_link=$(curl -s https://api.github.com/repos/ngtcp2/nghttp2/releases/latest  |  jq -r '.assets[] | select(.name | endswith (".tar.gz")) | .browser_download_url')
+          latest_link=$(curl -s https://api.github.com/repos/nghttp2/nghttp2/releases/latest  |  jq -r '.assets[] | select(.name | endswith (".tar.gz")) | .browser_download_url')
           if [ -z $latest_link ]; then
             exit 1
           else
