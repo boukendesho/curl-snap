@@ -54,6 +54,7 @@ parts:
       - --with-openssl-quic
       - --enable-versioned-symbols
       - --disable-static
+      - --disable-docs
     build-packages:
       # - libssl-dev
       - libssh2-1-dev
@@ -78,8 +79,6 @@ parts:
     prime:
       - -usr/share/doc
       - -usr/local/include
-      - -usr/local/share/doc
-      - -usr/local/share/man
   openssl:
     plugin: make
     source: https://github.com/openssl/openssl/releases/download/openssl-3.6.0/openssl-3.6.0.tar.gz

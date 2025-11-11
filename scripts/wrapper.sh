@@ -15,7 +15,7 @@ if [ ! -f "$ACK_FILE" ]; then
     For details, see: https://github.com/boukendesho/curl-snap/issues/1
     
     To stop seeing this message, run the following command:
-    curl.snap-acked
+    $ curl.snap-acked
 
 EOL
 
