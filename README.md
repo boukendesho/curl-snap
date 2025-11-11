@@ -21,6 +21,22 @@ This snap is maintained by me, and is not affiliated with the upstream project i
 ```bash
 $ sudo snap install curl
 ```
+## Config file path
+
+There are 3 places that we can create the config file for snap curl.
+1. "$CURL_HOME/.curlrc" -> /home/$USER/snap/curl/common/.curlrc (Recommend)
+2. "$XDG_CONFIG_HOME/curlrc" -> /home/$USER/snap/curl/current/.config/curlrc
+3. "$HOME/.curlrc" -> /home/$USER/.curlrc
+
+Example:
+```bash
+$ cat /home/$USER/snap/curl/common/.curlrc
+proto-default = "https"
+location
+globoff
+remote-time
+remote-name
+```
 
 ## Doc
 
