@@ -110,7 +110,7 @@ parts:
       - -usr/local/include
   nghttp3:
     plugin: cmake
-    source: https://github.com/ngtcp2/nghttp3/releases/download/v1.12.0/nghttp3-1.12.0.tar.gz
+    source: https://github.com/ngtcp2/nghttp3/releases/download/v1.13.0/nghttp3-1.13.0.tar.gz
     cmake-parameters:
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_LIB_ONLY=ON
