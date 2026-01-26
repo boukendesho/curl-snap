@@ -23,7 +23,7 @@ jobs:
         run: echo "Latest link is ${{ steps.upstream-openssl.outputs.latest }}"
       
       - name: Checkout this repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: get current openssl link
         id: current-openssl
