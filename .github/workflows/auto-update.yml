@@ -35,7 +35,7 @@ jobs:
         run: echo "Upstream version is ${{ steps.modified.outputs.version }}"
       
       - name: Checkout this repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: get current version
         id: current
