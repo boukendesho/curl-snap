@@ -82,7 +82,7 @@ parts:
       - -usr/local/include
   openssl:
     plugin: make
-    source: https://github.com/openssl/openssl/releases/download/openssl-3.6.0/openssl-3.6.0.tar.gz
+    source: https://github.com/openssl/openssl/releases/download/openssl-3.6.1/openssl-3.6.1.tar.gz
     override-build: |
       # fix build error on armhf. https://github.com/openssl/openssl/issues/21630
       if [ x$(dpkg --print-architecture) == x'armhf' ];then
