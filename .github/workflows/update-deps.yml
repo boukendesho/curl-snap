@@ -41,6 +41,35 @@ jobs:
         with:
           cmd: yq -i '.parts.openssl.source = "${{ steps.upstream-openssl.outputs.latest }}"' 'snap/snapcraft.yaml'
       
+      - name: fetch upstream ngtcp2 latest file
+        id: upstream-ngtcp2
+        run: |
+          latest_link=$(curl -s https://api.github.com/repos/ngtcp2/ngtcp2/releases/latest  |  jq -r '.assets[] | select(.name | endswith (".tar.gz")) | .browser_download_url')
+          if [ -z $latest_link ]; then
+            exit 1
+          else
+            echo "latest=$latest_link" >> $GITHUB_OUTPUT
+          fi
+
+      - name: show latest ngtcp2 link
+        run: echo "Latest link is ${{ steps.upstream-ngtcp2.outputs.latest }}"
+      
+      - name: get current ngtcp2 link
+        id: current-ngtcp2
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq '.parts.ngtcp2.source' 'snap/snapcraft.yaml'
+
+      - name: show current ngtcp2 link
+        run: echo "Current ngtcp2 link is ${{ steps.current-ngtcp2.outputs.result }}"
+
+      - name: update ngtcp2 link
+        id: update-ngtcp2
+        if: steps.upstream-ngtcp2.outputs.latest != steps.current-ngtcp2.outputs.result
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.parts.ngtcp2.source = "${{ steps.upstream-ngtcp2.outputs.latest }}"' 'snap/snapcraft.yaml'
+          
       - name: fetch upstream nghttp2 latest file
         id: upstream-nghttp2
         run: |
@@ -69,7 +98,7 @@ jobs:
         uses: mikefarah/yq@master
         with:
           cmd: yq -i '.parts.nghttp2.source = "${{ steps.upstream-nghttp2.outputs.latest }}"' 'snap/snapcraft.yaml'
-          
+
       - name: fetch upstream nghttp3 latest file
         id: upstream-nghttp3
         run: |

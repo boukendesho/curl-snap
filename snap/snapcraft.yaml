@@ -41,6 +41,7 @@ apps:
 parts:
   curl:
     after:
+      - ngtcp2
       - nghttp2
       - nghttp3
       - openssl
@@ -50,9 +51,10 @@ parts:
       - --with-openssl
       - --with-gssapi
       - --with-libssh2
+      - --with-ngtcp2
       - --with-nghttp2
       - --with-nghttp3
-      - --with-openssl-quic
+      # - --with-openssl-quic   # dropped by upstream since v8.19.0
       - --enable-versioned-symbols
       - --disable-static
       - --disable-docs
@@ -97,6 +99,19 @@ parts:
       - -usr/local/lib/libssl.a
       - -usr/local/share/doc
       - -usr/local/share/man
+  ngtcp2:
+    after: [openssl]
+    plugin: cmake
+    source: https://github.com/ngtcp2/ngtcp2/releases/download/v1.21.0/ngtcp2-1.21.0.tar.gz
+    cmake-parameters:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_LIB_ONLY=ON
+      - -DENABLE_OPENSSL=ON
+    build-packages:
+      - pkg-config
+    prime:
+      - -usr/local/include
+      - -usr/local/share
   nghttp2:
     plugin: cmake
     source: https://github.com/nghttp2/nghttp2/releases/download/v1.68.0/nghttp2-1.68.0.tar.gz
@@ -108,6 +123,7 @@ parts:
       - pkg-config
     prime:
       - -usr/local/include
+      - -usr/local/share
   nghttp3:
     plugin: cmake
     source: https://github.com/ngtcp2/nghttp3/releases/download/v1.15.0/nghttp3-1.15.0.tar.gz
